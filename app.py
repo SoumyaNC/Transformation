@@ -53,16 +53,32 @@ def transform():
     crm_data = data.get("crm_data", [])
     call_logs = data.get("call_logs", [])
 
-    crm_index = {c["customer_id"]: c for c in crm_data}
-    final = []
+    if not crm_data or not call_logs:
+        return jsonify({"error": "Missing 'crm_data' or 'call_logs' in request"}), 400
+
+    # Read join key config or default to 'customer_id'
+    join_config = mapping_config.get("join", {})
+    call_key = join_config.get("call_key", "customer_id")
+    crm_key = join_config.get("crm_key", "customer_id")
+
+    # Build index for CRM data
+    crm_index = {str(c[crm_key]): c for c in crm_data if crm_key in c}
+
+    transformed_records = []
 
     for call in call_logs:
-        customer = crm_index.get(call["customer_id"], {})
-        combined = {**call, **customer}
-        transformed = transform_record(combined, mapping_config)
-        final.append(transformed)
+        customer_id = str(call.get(call_key))
+        if not customer_id:
+            continue  # skip if no join key in call record
 
-    return jsonify(final)
+        customer_info = crm_index.get(customer_id, {})
+        merged_row = {**call, **customer_info}
+
+        transformed = transform_record(merged_row, mapping_config)
+        transformed_records.append(transformed)
+
+    return jsonify(transformed_records)
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)
