@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YAML Editor</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 30px; }
+        textarea { width: 100%; height: 500px; font-family: monospace; font-size: 14px; }
+        .error { color: red; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Mapping Configuration</h1>
+    {% if error %}
+    <div class="error"><strong>YAML Error:</strong> {{ error }}</div>
+    {% endif %}
+    <form method="post" action="/save">
+        <textarea name="yaml_content">{{ yaml_content }}</textarea>
+        <br><br>
+        <button type="submit">Save Changes</button>
+    </form>
+</body>
+</html>
