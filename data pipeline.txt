@@ -1,0 +1,72 @@
+Detailed Plan for Using the Customer Short List for Analytics Update
+1. Track When You Last Updated Analytics
+Keep a record of the last time you ran the analytics update job (for example, yesterday at 2am).
+
+2. Identify Relevant Customers
+A. Customers with CRM Changes:
+
+Review the CRM system for customers whose information (name, age, location, etc.) was changed or updated after your last analytics job.
+
+B. Customers with New Transactions:
+
+Check transaction logs for customers who had new interactions (calls, chats, etc.) after the last run.
+
+3. Build the Short List
+Combine the list of customers from CRM changes and the list from new transactions.
+
+Make sure each customer appears only once in this combined list (remove duplicates).
+
+4. For Each Customer in the Short List:
+a) Get the Latest Customer Profile
+Fetch the most recent customer details from CRM (in case of any profile updates).
+
+b) Get Transaction Data
+Gather all the customer’s new transactions since the last run (or, if needed for accurate metrics, fetch all their transactions for a specific period like the current month).
+
+c) Calculate Metrics
+AHT (Average Handle Time):
+
+If you keep running totals, add up the new durations and update the total and count; otherwise, recalculate from scratch for the period you care about.
+
+FCR (First Call Resolution):
+
+Determine, among their new issues, which were resolved in the first interaction without repeats.
+
+Escalation Rate:
+
+Count how many of the new interactions needed to be escalated to a supervisor or higher tier.
+
+d) Update Analytics Table
+Write (insert or update) the analytics data for this customer into your Analytics Table.
+
+e) Log Results (Optional but Recommended)
+Keep track of which customers were processed, whether updates were successful, and any errors encountered (this is helpful for audits and troubleshooting).
+
+5. After All Customers Are Processed
+Update your “last run time” marker to the time this job finished.
+
+This ensures next time, you only pick up new or changed data.
+
+6. (Optional Enhancements for Large Scale)
+Parallel Processing:
+
+If your short list is large, you can split the list and process customers in parallel (using multiple threads or machines).
+
+Error Handling:
+
+If there’s a failure on one customer, record it but allow the rest to continue.
+
+Monitoring and Alerts:
+
+Set up alerts if the job fails or takes too long.
+
+Summary Table of Steps
+Step	What You Do	Why
+1	Track last update time	For incremental processing
+2	Find changed customers (CRM + transactions)	To target only customers with changes
+3	Build unique short list	Avoid double work
+4	For each customer: get data, calculate, update	Perform focused analytics update
+5	Update last run time	Prep for next cycle
+6	(Optional) parallel, monitor, error-handle	Robustness and scalability
+
+This plan ensures you always work only on customers with actual new activity or changes, making your analytics scalable and up-to-date without unnecessary workload.
